@@ -39,10 +39,6 @@ public class PreparedOKPacket extends MySQLPacket {
     public int parametersNumber;
     public byte filler;
     public int warningCount;
-    public ColumnDefinitionPacket[] parameterDefinitions;
-    public EOFPacket parameterEOFPacket;
-    public ColumnDefinitionPacket[] columnDefinitions;
-    public EOFPacket columnEOFPacket;
 
     public void read(ProxyBuffer buffer) {
         // packet length:3
@@ -60,26 +56,6 @@ public class PreparedOKPacket extends MySQLPacket {
         parametersNumber = (int)buffer.readFixInt(2);
         filler = buffer.readByte();
         warningCount = (int)buffer.readFixInt(2);
-        if (parametersNumber > 0) {
-            parameterDefinitions = new ColumnDefinitionPacket[parametersNumber];
-            for (int i=0; i<parametersNumber; i++) {
-                ColumnDefinitionPacket columnDefinition = new ColumnDefinitionPacket(MySQLCommand.COM_STMT_PREPARE);
-                columnDefinition.read(buffer);
-                parameterDefinitions[i] = columnDefinition;
-            }
-            parameterEOFPacket = new EOFPacket();
-            parameterEOFPacket.read(buffer);
-        }
-        if (columnsNumber > 0) {
-            columnDefinitions = new ColumnDefinitionPacket[columnsNumber];
-            for (int i=0; i<columnsNumber; i++) {
-                ColumnDefinitionPacket columnDefinition = new ColumnDefinitionPacket(MySQLCommand.COM_STMT_PREPARE);
-                columnDefinition.read(buffer);
-                columnDefinitions[i] = columnDefinition;
-            }
-            columnEOFPacket = new EOFPacket();
-            columnEOFPacket.read(buffer);
-        }
     }
 
     @Override
@@ -95,14 +71,6 @@ public class PreparedOKPacket extends MySQLPacket {
         buffer.writeFixInt(2, parametersNumber);
         buffer.writeByte(filler);
         buffer.writeFixInt(2, warningCount);
-        for (int i=0; i<parametersNumber; i++) {
-            parameterDefinitions[i].write(buffer);
-        }
-        parameterEOFPacket.write(buffer);
-        for (int i=0; i<columnsNumber; i++) {
-            columnDefinitions[i].write(buffer);
-        }
-        columnEOFPacket.write(buffer);
     }
 
     @Override
