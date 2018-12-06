@@ -5,10 +5,10 @@ replicas:
     balanceType: BALANCE_ALL_READ   # 读写分离类型
     mysqls:            
       - hostName: mytest3306              # mysql 主机名
-        ip: 127.0.0.1               # i
+        ip: 10.4.40.57               # i
         port: 3306                  # port
         user: root                  # 用户名
-        password:             # 密码
+        password: Marble@dls16            # 密码
         minCon: 1                   # 最小连接
         maxCon: 10                  # 最大连接
         maxRetryCount: 3            # 连接重试次数

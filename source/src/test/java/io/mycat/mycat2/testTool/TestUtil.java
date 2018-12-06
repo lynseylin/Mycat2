@@ -113,15 +113,27 @@ public class TestUtil {
         okPacket.write(buffer);
         return buffer;
     }
-
-    public static ProxyBuffer err() {
+    public static ErrorPacket errPacket(int packetId) {
         ErrorPacket eofPacket = new ErrorPacket();
-        ProxyBuffer buffer = exampleBuffer();
+        eofPacket.packetId = (byte) packetId;
+        eofPacket.message = "";
+        return eofPacket;
+    }
+    public static void  anyPacket(int payloadLength,int packetId,ProxyBuffer buffer) {
+        buffer.writeFixInt(3, payloadLength);
+        buffer.writeByte((byte) packetId);
+    }
+    public static ProxyBuffer errBuffer() {
+        ErrorPacket eofPacket = new ErrorPacket();
+        eofPacket.packetId = 12;
+        eofPacket.message = "";
+        ProxyBuffer buffer = TestUtil.exampleBuffer();
         eofPacket.write(buffer);
         return buffer;
     }
-    public static ProxyBuffer fieldCount() {
+    public static ProxyBuffer fieldCount(int count) {
         ResultSetHeaderPacket headerPacket = new ResultSetHeaderPacket();
+        headerPacket.fieldCount = count;
         ProxyBuffer buffer = exampleBuffer();
         headerPacket.write(buffer);
         return buffer;
